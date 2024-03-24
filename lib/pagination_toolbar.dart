@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 const pageSize = 20;
+const firstPage = 1;
 
 class PaginationToolbar extends StatefulWidget {
   const PaginationToolbar({Key? key, required this.totalCount}) : super(key: key);
@@ -16,11 +17,13 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
   int _start = 1;
   int _end = 0;
   int _totalCount = 0;
-  int _currentPage = 1;
+  int _currentPage = firstPage;
+  int _lastPage = firstPage;
 
   @override
   Widget build(BuildContext context) {
     _totalCount = widget.totalCount;
+
     final currentMaxCount = _currentPage * pageSize;
     _start = 1 + ((_currentPage - 1) * pageSize);
     if (_totalCount <= pageSize || _totalCount <= currentMaxCount) {
@@ -28,6 +31,9 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
     } else {
       _end = currentMaxCount;
     }
+    _lastPage = _totalCount % pageSize == 0
+        ? _totalCount ~/ pageSize
+        : _totalCount ~/ pageSize + 1;
 
     return SizedBox(
       height: 24,
@@ -62,6 +68,8 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
             type: PageButtonType.previous,
             onTap: () => setState(() => _currentPage -= 1)
         ),
+        Text('$_currentPage'),
+        Text('$_lastPage'),
         PageButton(
             type: PageButtonType.next,
             onTap: () => setState(() => _currentPage += 1)
