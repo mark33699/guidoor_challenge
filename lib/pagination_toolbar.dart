@@ -16,23 +16,30 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
   int _start = 1;
   int _end = 0;
   int _totalCount = 0;
-  int _currentPage = 4;
+  int _currentPage = 1;
 
   @override
   Widget build(BuildContext context) {
     _totalCount = widget.totalCount;
     final currentMaxCount = _currentPage * pageSize;
-    _start = _start + ((_currentPage - 1) * pageSize);
+    _start = 1 + ((_currentPage - 1) * pageSize);
     if (_totalCount <= pageSize || _totalCount <= currentMaxCount) {
       _end = _totalCount;
     } else {
       _end = currentMaxCount;
     }
 
-    return Row(
-      children: [
-        _buildCount()
-      ],
+    return SizedBox(
+      height: 24,
+      child: Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          _buildCount(),
+          VerticalDivider(),
+          Expanded(child: _buildPageController())
+        ],
+      ),
     );
   }
 
@@ -47,4 +54,38 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
     );
   }
 
+  Widget _buildPageController() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        PageButton(
+            type: PageButtonType.previous,
+            onTap: () => setState(() => _currentPage -= 1)
+        ),
+        PageButton(
+            type: PageButtonType.next,
+            onTap: () => setState(() => _currentPage += 1)
+        ),
+      ],
+    );
+  }
+
 }
+
+enum PageButtonType {first, previous, next, last}
+
+class PageButton extends StatelessWidget {
+  const PageButton({Key? key, required this.type, required this.onTap}) : super(key: key);
+
+  final PageButtonType type;
+  final GestureTapCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      child: Text('P'),
+      onTap: onTap,
+    );
+  }
+}
+
