@@ -10,7 +10,7 @@ class GuidoorPage extends StatefulWidget {
 
 class _GuidoorPageState extends State<GuidoorPage> {
 
-  var _recordTotalCount = 0;
+  var _recordTotalCount = 99;
 
   @override
   Widget build(BuildContext context) {

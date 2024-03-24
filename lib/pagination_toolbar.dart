@@ -15,11 +15,20 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
 
   int _start = 1;
   int _end = 0;
-  int _total = 0;
+  int _totalCount = 0;
+  int _currentPage = 4;
 
   @override
   Widget build(BuildContext context) {
-    _total = widget.totalCount;
+    _totalCount = widget.totalCount;
+    final currentMaxCount = _currentPage * pageSize;
+    _start = _start + ((_currentPage - 1) * pageSize);
+    if (_totalCount <= pageSize || _totalCount <= currentMaxCount) {
+      _end = _totalCount;
+    } else {
+      _end = currentMaxCount;
+    }
+
     return Row(
       children: [
         _buildCount()
@@ -33,7 +42,7 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
         Text('$_start - $_end',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        Text(' of $_total'),
+        Text(' of $_totalCount'),
       ],
     );
   }
