@@ -20,6 +20,9 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
   int _currentPage = firstPage;
   int _lastPage = firstPage;
 
+  bool get _isCurrentFirstPage => _currentPage == firstPage;
+  bool get _isCurrentLastPage => _currentPage == _lastPage;
+
   @override
   Widget build(BuildContext context) {
     _totalCount = widget.totalCount;
@@ -65,14 +68,30 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         PageButton(
+            type: PageButtonType.first,
+            onTap: _isCurrentFirstPage
+                ? null
+                : () => setState(() => _currentPage = firstPage)
+        ),
+        PageButton(
             type: PageButtonType.previous,
-            onTap: () => setState(() => _currentPage -= 1)
+            onTap: _isCurrentFirstPage
+                ? null
+                : () => setState(() => _currentPage -= 1)
         ),
         Text('$_currentPage'),
         Text('$_lastPage'),
         PageButton(
             type: PageButtonType.next,
-            onTap: () => setState(() => _currentPage += 1)
+            onTap: _isCurrentLastPage
+                ? null
+                : () => setState(() => _currentPage += 1)
+        ),
+        PageButton(
+            type: PageButtonType.last,
+            onTap: _isCurrentLastPage
+                ? null
+                : () => setState(() => _currentPage = _lastPage)
         ),
       ],
     );
