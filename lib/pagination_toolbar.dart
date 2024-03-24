@@ -96,26 +96,38 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
   }
 
   Widget _buildPageNumbers() {
-
     List<Widget> pageNumbers = [];
     if (_lastPage <= _pageNumbersCount) {
-      pageNumbers = List.generate(_lastPage, (index) => Text('${index+1}'));
+      pageNumbers = List.generate(_lastPage, (index) => _buildPageNumber(index+1));
     } else if (_currentPage + _pageNumbersCount > _lastPage) {
-      pageNumbers = List.generate(_pageNumbersCount, (index) => Text('${_lastPage-index}')).reversed.toList();
+      pageNumbers = List.generate(_pageNumbersCount, (index)
+      => _buildPageNumber(_lastPage-index)
+      ).reversed.toList();
     } else {
       pageNumbers = List.generate(_pageNumbersCount, (index) {
         if (index == _pageNumbersCount - 1) {
-          return Text('$_lastPage');
+          return _buildPageNumber(_lastPage);
         } else if (index == _pageNumbersCount - 2) {
           return Text('...');
         }
-        return Text('${_currentPage+index}');
+        return _buildPageNumber(_currentPage+index);
       });
     }
 
     return Wrap(
       spacing: _pageControllerSpacing,
       children: pageNumbers,
+    );
+  }
+
+  Widget _buildPageNumber(int number) {
+    return GestureDetector(
+      child: Text('$number',
+        style: TextStyle(
+          decoration: number == _currentPage ? TextDecoration.underline : null,
+        ),
+      ),
+      onTap: () => setState(() => _currentPage = number),
     );
   }
 
@@ -137,4 +149,3 @@ class PageButton extends StatelessWidget {
     );
   }
 }
-
