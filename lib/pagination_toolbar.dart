@@ -20,8 +20,7 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
   bool get _isCurrentFirstPage => _currentPage == _firstPage;
   bool get _isCurrentLastPage => _currentPage == _lastPage;
 
-  @override
-  Widget build(BuildContext context) {
+  _calculateRangeAndPage() {
     if (_totalCount != widget.totalCount) { //rebuild from outside
       _currentPage = _firstPage;
       _lastPage = _firstPage;
@@ -40,9 +39,14 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
           ? _totalCount ~/ _pageSize
           : _totalCount ~/ _pageSize + 1;
     }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _calculateRangeAndPage();
 
     return Container(
-      padding: const EdgeInsets.only(right: _pageControllerSpacing * 2),
+      padding: const EdgeInsets.symmetric(horizontal: _pageControllerSpacing * 2),
       decoration: const BoxDecoration(
         color: GuidoorColors.toolbar,
         borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -52,6 +56,8 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
+          _buildTitle(),
+          const Spacer(),
           _buildCount(),
           const SizedBox(
               height: 24,
@@ -63,17 +69,44 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
     );
   }
 
+  Widget _buildTitle() {
+    return Row(
+      children: [
+        Image.asset('image/logo_contacts.png',
+          height: 40, width: 40,
+        ),
+        const SizedBox(width: _pageControllerSpacing),
+        Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('Contacts',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            ),
+            Text('$_totalCount Contact${ _totalCount == 0 ? '' : 's' }',
+              style: const TextStyle(fontSize: 12),
+            )
+          ],
+        )
+      ],
+    );
+  }
+
   Widget _buildCount() {
     return Row(
       children: [
         Text('$_start - $_end',
           style: const TextStyle(
+              fontSize: 14,
               color: GuidoorColors.text,
               fontWeight: FontWeight.bold
           ),
         ),
         Text(' of $_totalCount',
-            style: const TextStyle(color: GuidoorColors.text)
+            style: const TextStyle(
+                fontSize: 14,
+                color: GuidoorColors.text
+            )
         ),
       ],
     );
@@ -131,9 +164,12 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
       });
     }
 
-    return Wrap(
-      spacing: _pageControllerSpacing,
-      children: pageNumbers,
+    return Padding(
+      padding: const EdgeInsets.only(top: 2.0),
+      child: Wrap(
+        spacing: _pageControllerSpacing,
+        children: pageNumbers,
+      ),
     );
   }
 
@@ -141,10 +177,17 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
     return GestureDetector(
       child: Text('$number',
         style: TextStyle(
-          decoration: number == _currentPage ? TextDecoration.underline : null,
+            fontSize: 14,
+            color: GuidoorColors.text,
+            decoration: number == _currentPage ? TextDecoration.underline : null,
+            decorationColor: GuidoorColors.text
         ),
       ),
-      onTap: () => setState(() => _currentPage = number),
+      onTap: () {
+        if (number != _currentPage) {
+          setState(() => _currentPage = number);
+        }
+      },
     );
   }
 
