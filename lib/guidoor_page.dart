@@ -10,14 +10,14 @@ class GuidoorPage extends StatefulWidget {
 
 class _GuidoorPageState extends State<GuidoorPage> {
 
-  var _recordTotalCount = 99;
+  var _recordTotalCount = 0;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('technical challenge')),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 80),
+        padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,

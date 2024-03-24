@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-const pageSize = 20;
-const firstPage = 1;
+const _pageControllerSpacing = 8.0;
+const _pageSize = 20, _firstPage = 1, _pageNumbersCount = 4;
 
 class PaginationToolbar extends StatefulWidget {
   const PaginationToolbar({Key? key, required this.totalCount}) : super(key: key);
@@ -14,39 +14,35 @@ class PaginationToolbar extends StatefulWidget {
 
 class _PaginationToolbarState extends State<PaginationToolbar> {
 
-  int _start = 1;
-  int _end = 0;
-  int _totalCount = 0;
-  int _currentPage = firstPage;
-  int _lastPage = firstPage;
-
-  bool get _isCurrentFirstPage => _currentPage == firstPage;
+  int _start = 1, _end = 0, _totalCount = 0;
+  int _currentPage = _firstPage, _lastPage = _firstPage;
+  bool get _isCurrentFirstPage => _currentPage == _firstPage;
   bool get _isCurrentLastPage => _currentPage == _lastPage;
 
   @override
   Widget build(BuildContext context) {
     _totalCount = widget.totalCount;
 
-    final currentMaxCount = _currentPage * pageSize;
-    _start = 1 + ((_currentPage - 1) * pageSize);
-    if (_totalCount <= pageSize || _totalCount <= currentMaxCount) {
+    final currentMaxCount = _currentPage * _pageSize;
+    _start = 1 + ((_currentPage - 1) * _pageSize);
+    if (_totalCount <= _pageSize || _totalCount <= currentMaxCount) {
       _end = _totalCount;
     } else {
       _end = currentMaxCount;
     }
-    _lastPage = _totalCount % pageSize == 0
-        ? _totalCount ~/ pageSize
-        : _totalCount ~/ pageSize + 1;
+    _lastPage = _totalCount % _pageSize == 0
+        ? _totalCount ~/ _pageSize
+        : _totalCount ~/ _pageSize + 1;
 
     return SizedBox(
       height: 24,
       child: Row(
         mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           _buildCount(),
           VerticalDivider(),
-          Expanded(child: _buildPageController())
+          _buildPageControllers()
         ],
       ),
     );
@@ -63,15 +59,15 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
     );
   }
 
-  Widget _buildPageController() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  Widget _buildPageControllers() {
+    return Wrap(
+      spacing: _pageControllerSpacing,
       children: [
         PageButton(
             type: PageButtonType.first,
             onTap: _isCurrentFirstPage
                 ? null
-                : () => setState(() => _currentPage = firstPage)
+                : () => setState(() => _currentPage = _firstPage)
         ),
         PageButton(
             type: PageButtonType.previous,
@@ -79,8 +75,7 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
                 ? null
                 : () => setState(() => _currentPage -= 1)
         ),
-        Text('$_currentPage'),
-        Text('$_lastPage'),
+        if(_totalCount != 0) _buildPageNumbers(),
         PageButton(
             type: PageButtonType.next,
             onTap: _isCurrentLastPage
@@ -94,6 +89,30 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
                 : () => setState(() => _currentPage = _lastPage)
         ),
       ],
+    );
+  }
+
+  Widget _buildPageNumbers() {
+
+    List<Widget> pageNumbers = [];
+    if (_lastPage <= _pageNumbersCount) {
+      pageNumbers = List.generate(_lastPage, (index) => Text('${index+1}'));
+    } else if (_currentPage + _pageNumbersCount > _lastPage) {
+      pageNumbers = List.generate(_pageNumbersCount, (index) => Text('${_lastPage-index}')).reversed.toList();
+    } else {
+      pageNumbers = List.generate(_pageNumbersCount, (index) {
+        if (index == _pageNumbersCount - 1) {
+          return Text('$_lastPage');
+        } else if (index == _pageNumbersCount - 2) {
+          return Text('...');
+        }
+        return Text('${_currentPage+index}');
+      });
+    }
+
+    return Wrap(
+      spacing: _pageControllerSpacing,
+      children: pageNumbers,
     );
   }
 
