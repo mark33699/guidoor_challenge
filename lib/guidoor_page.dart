@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:guidoor_challenge/pagination_toolbar.dart';
+import 'pagination_toolbar.dart';
+import 'theme.dart';
 
 class GuidoorPage extends StatefulWidget {
   const GuidoorPage({Key? key}) : super(key: key);
@@ -16,6 +17,7 @@ class _GuidoorPageState extends State<GuidoorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('technical challenge')),
+      backgroundColor: GuidoorColors.background,
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 24),
         child: Center(
@@ -23,14 +25,17 @@ class _GuidoorPageState extends State<GuidoorPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               PaginationToolbar(totalCount: _recordTotalCount),
-              const SizedBox(height: 40),
-              TextField(
-                keyboardType: TextInputType.number,
-                onSubmitted: (recordTotalCount) {
-                  setState(() {
-                    _recordTotalCount = int.tryParse(recordTotalCount) ?? 0;
-                  });
-                },
+              SizedBox(height: 40),
+              SizedBox(
+                width: 40,
+                child: TextField(
+                  style: TextStyle(color: Colors.white),
+                  onSubmitted: (recordTotalCount) {
+                    setState(() {
+                      _recordTotalCount = int.tryParse(recordTotalCount) ?? 0;
+                    });
+                  },
+                ),
               )
             ],
           ),

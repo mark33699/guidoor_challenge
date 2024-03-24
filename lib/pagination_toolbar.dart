@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'theme.dart';
 
 const _pageControllerSpacing = 8.0;
 const _pageSize = 20, _firstPage = 1, _pageNumbersCount = 4;
@@ -40,14 +41,22 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
           : _totalCount ~/ _pageSize + 1;
     }
 
-    return SizedBox(
-      height: 24,
+    return Container(
+      padding: const EdgeInsets.only(right: _pageControllerSpacing * 2),
+      decoration: const BoxDecoration(
+        color: GuidoorColors.toolbar,
+        borderRadius: BorderRadius.all(Radius.circular(8)),
+      ),
+      height: 72,
       child: Row(
         mainAxisSize: MainAxisSize.max,
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           _buildCount(),
-          VerticalDivider(),
+          const SizedBox(
+              height: 24,
+              child: VerticalDivider()
+          ),
           _buildPageControllers()
         ],
       ),
@@ -58,9 +67,14 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
     return Row(
       children: [
         Text('$_start - $_end',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: const TextStyle(
+              color: GuidoorColors.text,
+              fontWeight: FontWeight.bold
+          ),
         ),
-        Text(' of $_totalCount'),
+        Text(' of $_totalCount',
+            style: const TextStyle(color: GuidoorColors.text)
+        ),
       ],
     );
   }
@@ -111,7 +125,7 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
         if (index == _pageNumbersCount - 1) {
           return _buildPageNumber(_lastPage);
         } else if (index == _pageNumbersCount - 2) {
-          return Text('...');
+          return const Text('...');
         }
         return _buildPageNumber(_currentPage+index);
       });
