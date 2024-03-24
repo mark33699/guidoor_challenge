@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guidoor_challenge/pagination_toolbar.dart';
 
 class GuidoorPage extends StatefulWidget {
   const GuidoorPage({Key? key}) : super(key: key);
@@ -21,7 +22,7 @@ class _GuidoorPageState extends State<GuidoorPage> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text('$_recordTotalCount'),
+              PaginationToolbar(totalCount: _recordTotalCount),
               const SizedBox(height: 40),
               TextField(
                 keyboardType: TextInputType.number,
