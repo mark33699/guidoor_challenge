@@ -23,6 +23,7 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
   Widget build(BuildContext context) {
     if (_totalCount != widget.totalCount) { //rebuild from outside
       _currentPage = _firstPage;
+      _lastPage = _firstPage;
     }
     _totalCount = widget.totalCount;
 
@@ -33,9 +34,11 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
     } else {
       _end = currentMaxCount;
     }
-    _lastPage = _totalCount % _pageSize == 0
-        ? _totalCount ~/ _pageSize
-        : _totalCount ~/ _pageSize + 1;
+    if (_totalCount != 0) {
+      _lastPage = _totalCount % _pageSize == 0
+          ? _totalCount ~/ _pageSize
+          : _totalCount ~/ _pageSize + 1;
+    }
 
     return SizedBox(
       height: 24,
@@ -143,9 +146,13 @@ class PageButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      child: Text('P'),
-      onTap: onTap,
+    final imageName = 'image/btn_${type.name}_${ onTap == null ? 'disable' : 'enable' }.png';
+    return SizedBox(
+      height: 24, width: 24,
+      child: GestureDetector(
+        child: Image.asset(imageName),
+        onTap: onTap,
+      ),
     );
   }
 }
