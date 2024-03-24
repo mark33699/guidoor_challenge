@@ -21,6 +21,9 @@ class _PaginationToolbarState extends State<PaginationToolbar> {
 
   @override
   Widget build(BuildContext context) {
+    if (_totalCount != widget.totalCount) { //rebuild from outside
+      _currentPage = _firstPage;
+    }
     _totalCount = widget.totalCount;
 
     final currentMaxCount = _currentPage * _pageSize;
